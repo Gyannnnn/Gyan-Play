@@ -1,0 +1,53 @@
+nav{
+    padding: 10px 2%;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0,0 ,0,0.2);
+    background: #fff;
+}
+.nav-left{
+    gap: 10px;
+}
+.nav-left img{
+    height: 4vh;
+}
+
+
+.nav-middle .searchsearch-box img{
+    width: 15px;
+
+}
+.nav-right img{
+    width: 25px;
+    margin-right: 25px;
+}
+.nav-right .user-icon{
+    width: 35px;
+    border-radius: 50%;
+}
+.nav-middle .search-box{
+    border: 1px solid #000000a7;
+    padding: 8px 30px;
+    border-radius: 25px;
+    width: 450px;
+    gap: 10px;
+}
+.nav-middle input{
+    border: none;
+    outline: 0;
+    flex: 1;
+    font: 20px;
+
+    
+}
+
+/* STYLING MUNU LOGO */
+
+#menu-logo{
+    height: 20px;
+}
+#hero-logo{
+    height: 30px;
+}
