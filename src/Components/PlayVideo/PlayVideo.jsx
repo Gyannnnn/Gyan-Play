@@ -24,10 +24,12 @@ const PlayVideo = () => {
 
       <hr />
       <div className="publisher">
-        <img src={hero} alt="" />
         <div>
+          <img src={hero} alt="" />
+          <div>
           <p>Gyan Play</p>
           <span>14M Subscriber</span>
+          </div>
         </div>
         <button>Subscribe</button>
       </div>

@@ -37,3 +37,31 @@
     margin: 10px 0;
 
 }
+.publisher{
+    padding: 0px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.publisher>div{
+    display: flex;
+}
+.publisher > button{
+    border: none;
+    background: #ED0000;
+    padding: 0 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #fff;
+}
+.publisher > button:hover{
+    background: #ed00009a;
+    color: #000;
+    
+}
+.publisher>div>img{
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    
+}
