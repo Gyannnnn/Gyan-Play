@@ -49,10 +49,11 @@
 .publisher > button{
     border: none;
     background: #ED0000;
-    padding: 0 10px;
-    border-radius: 20px;
+    padding: 8px 30px;
+    border-radius: 4px;
     cursor: pointer;
     color: #fff;
+    outline: 0;
 }
 .publisher > button:hover{
     background: #ed00009a;
@@ -64,4 +65,41 @@
     border-radius: 50%;
     margin-right: 15px;
     
+}
+.publisher p{
+    font-weight: 600;
+    font-size: 18px;
+}
+.publisher div span{
+    font-size: 13px;
+    color: #5a5a5a;
+}
+.vid-description{
+    padding-left: 55px;
+    margin: 15px 0;
+}
+.vid-description p{
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #5a5a5a;
+}
+.vid-description h4{
+    font-size: 14px;
+    color: #5a5a5a;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.comment{
+    display: flex;
+    align-items: flex-start;
+    margin: 20px 0;
+}
+.comment img{
+    width: 35px;
+    border-radius: 50%;
+}
+.comment h3{
+    color: #000;
+    font-size: 14px;
+    margin-bottom: 2px;
 }
