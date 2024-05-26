@@ -103,3 +103,17 @@
     font-size: 14px;
     margin-bottom: 2px;
 }
+.comment-action{
+    display: flex;
+    margin: 8px 0;
+    font-size: 14px;
+    align-items: center;
+}
+.comment-action img{
+    border-radius: 0;
+    width: 20px;
+}
+.comment-action span{
+    margin-right: 10px;
+    color: #5a5a5a;
+}
