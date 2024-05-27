@@ -24,3 +24,13 @@
 .card p{
     font-size: 14px;
 }
+
+
+#loader{
+    height: 100vh;
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+}

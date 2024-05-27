@@ -7,12 +7,13 @@ import upload_icon from '../../assets/upload.png'
 import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import hero from '../../assets/hero.jpg'
+import { Link } from 'react-router-dom'
 const Navbar = ({setSidebar}) => {
   return (
     <nav className='flex-div'>
       <div   className='nav-left flex-div'>
         <img id='menu-logo' src={menu_icon} onClick={()=>setSidebar(prev => prev === false ? true :false )}  alt="" />
-        <img  id='hero-logo'  src={herologo} alt="" />
+        <Link to='/'><img  id='hero-logo'  src={herologo} alt="" /></Link>
       </div>
       <div className="nav-middle flex-div">
         <div className="search-box flex-div ">

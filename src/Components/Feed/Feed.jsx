@@ -19,6 +19,9 @@ const Feed = ({ Catagory }) => {
     }
   };
 
+
+ 
+
   useEffect(() => {
     fetchData();
   }, [Catagory]);
@@ -35,7 +38,7 @@ const Feed = ({ Catagory }) => {
           </Link>
         ))
       ) : (
-        <p>Loading videos...</p>
+        <p  id='loader'>Loading videos...</p>
       )}
     </div>
   );

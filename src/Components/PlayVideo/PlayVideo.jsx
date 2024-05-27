@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './PlayVideo.css'
 import video1 from '../../assets/video.mp4'
 import like from '../../assets/like.png'
@@ -8,10 +8,16 @@ import save from '../../assets/save.png'
 import hero from '../../assets/hero.jpg'
 import user_profile from '../../assets/user_profile.jpg'
 
-const PlayVideo = () => {
+const PlayVideo = ({videoId}) => {
+
+  useEffect(()=>{
+    console.log("Videopage Is realoading !!!!");
+  })
+
   return (
     <div className="play-video">
-      <video src={video1} controls muted autoPlay></video>
+      {/* <video src={video1} controls muted autoPlay></video> */}
+      <iframe  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
       <div className="play-video-info">
         <p>150 M viwes &bull; 2 days ago</p>
         <div>
