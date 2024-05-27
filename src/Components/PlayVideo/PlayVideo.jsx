@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './PlayVideo.css'
 import video1 from '../../assets/video.mp4'
 import like from '../../assets/like.png'
@@ -7,21 +7,33 @@ import share from '../../assets/share.png'
 import save from '../../assets/save.png'
 import hero from '../../assets/hero.jpg'
 import user_profile from '../../assets/user_profile.jpg'
+import {API_KEY} from '../../Data'
+import { valuechanger } from '../../Data'
+import moment from 'moment'
 
 const PlayVideo = ({videoId}) => {
 
+  const [apiData,SetapiData]=useState(null);
+  const fetchVideoData = async () =>{
+    const videodetailsURL = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`
+      await fetch(videodetailsURL).then(res=>res.json()).then(data=>SetapiData(data.items[0]))
+  }
+
   useEffect(()=>{
-    console.log("Videopage Is realoading !!!!");
-  })
+    fetchVideoData();
+
+  },[])
+
 
   return (
     <div className="play-video">
       {/* <video src={video1} controls muted autoPlay></video> */}
       <iframe  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+      <h3>{apiData?apiData.snippet.title:'error'}</h3>
       <div className="play-video-info">
-        <p>150 M viwes &bull; 2 days ago</p>
+        <p>{apiData?valuechanger(apiData.statistics.viewCount):'error'} &bull; {apiData?''+moment(apiData.snippet.publishedAt).fromNow():'error'}</p>
         <div>
-          <span><img src={like} alt="" />130M</span>
+          <span><img src={like} alt="" />{apiData?valuechanger(apiData.statistics.likeCount):'error'}</span>
           <span><img src={dislike} alt="" />1k</span>
           <span><img src={share} alt="" />Share</span>
           <span><img src={save} alt="" />save</span>
@@ -31,9 +43,9 @@ const PlayVideo = ({videoId}) => {
       <hr />
       <div className="publisher">
         <div>
-          <img src={hero} alt="" />
+          <img src={apiData ? apiData.snippet.thumbnails.default.url : ''} alt="" />
           <div>
-            <p>Gyan Play</p>
+            <p>{apiData?apiData.snippet.channelTitle:'error'}</p>
             <span>14M Subscriber</span>
           </div>
         </div>
