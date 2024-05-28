@@ -1,312 +1,109 @@
-import React, { useEffect, useState } from 'react'
-import './PlayVideo.css'
-import video1 from '../../assets/video.mp4'
-import like from '../../assets/like.png'
-import dislike from '../../assets/dislike.png'
-import share from '../../assets/share.png'
-import save from '../../assets/save.png'
-import hero from '../../assets/hero.jpg'
-import user_profile from '../../assets/user_profile.jpg'
-import {API_KEY} from '../../Data'
-import { valuechanger } from '../../Data'
-import moment from 'moment'
+import React, { useEffect, useState } from 'react';
+import './PlayVideo.css';
+import video1 from '../../assets/video.mp4';
+import like from '../../assets/like.png';
+import dislike from '../../assets/dislike.png';
+import share from '../../assets/share.png';
+import save from '../../assets/save.png';
+import user_profile from '../../assets/user_profile.jpg';
+import { API_KEY, valuechanger } from '../../Data';
+import moment from 'moment';
 
-const PlayVideo = ({videoId}) => {
+const PlayVideo = ({ videoId }) => {
+  const [apiData, setApiData] = useState(null);
+  const [channelData, setChannelData] = useState(null);
 
-  const [apiData,SetapiData]=useState(null);
-  const fetchVideoData = async () =>{
-    const videodetailsURL = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`
-      await fetch(videodetailsURL).then(res=>res.json()).then(data=>SetapiData(data.items[0]))
-  }
+  const fetchVideoAndChannelData = async () => {
+    try {
+      const videodetailsURL = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`;
+      const videoResponse = await fetch(videodetailsURL);
+      const videoData = await videoResponse.json();
 
-  useEffect(()=>{
-    fetchVideoData();
+      if (videoData.items.length > 0) {
+        setApiData(videoData.items[0]);
+        const channelId = videoData.items[0].snippet.channelId;
+        const channelURL = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${channelId}&key=${API_KEY}`;
+        const channelResponse = await fetch(channelURL);
+        const channelData = await channelResponse.json();
 
-  },[])
+        if (channelData.items.length > 0) {
+          setChannelData(channelData.items[0]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching video or channel data: ", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchVideoAndChannelData();
+  }, [videoId]);
 
   return (
     <div className="play-video">
-      {/* <video src={video1} controls muted autoPlay></video> */}
-      <iframe  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-      <h3>{apiData?apiData.snippet.title:'error'}</h3>
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      ></iframe>
+      <h3>{apiData ? apiData.snippet.title : 'Loading...'}</h3>
       <div className="play-video-info">
-        <p>{apiData?valuechanger(apiData.statistics.viewCount):'error'} &bull; {apiData?''+moment(apiData.snippet.publishedAt).fromNow():'error'}</p>
+        <p>
+          {apiData ? valuechanger(apiData.statistics.viewCount) : 'Loading...'} &bull;{' '}
+          {apiData ? moment(apiData.snippet.publishedAt).fromNow() : 'Loading...'}
+        </p>
         <div>
-          <span><img src={like} alt="" />{apiData?valuechanger(apiData.statistics.likeCount):'error'}</span>
-          <span><img src={dislike} alt="" />1k</span>
-          <span><img src={share} alt="" />Share</span>
-          <span><img src={save} alt="" />save</span>
+          <span>
+            <img src={like} alt="like" />
+            {apiData ? valuechanger(apiData.statistics.likeCount) : 'Loading...'}
+          </span>
+          <span>
+            <img src={dislike} alt="dislike" />1k
+          </span>
+          <span>
+            <img src={share} alt="share" />Share
+          </span>
+          <span>
+            <img src={save} alt="save" />Save
+          </span>
         </div>
       </div>
 
       <hr />
       <div className="publisher">
         <div>
-          <img src={apiData ? apiData.snippet.thumbnails.default.url : ''} alt="" />
+          <img src={channelData ? channelData.snippet.thumbnails.default.url : ''} alt="Channel Thumbnail" />
           <div>
-            <p>{apiData?apiData.snippet.channelTitle:'error'}</p>
-            <span>14M Subscriber</span>
+            <p>{channelData ? channelData.snippet.title : 'Loading...'}</p>
+            <span>{channelData ? valuechanger(channelData.statistics.subscriberCount) : 'Loading...'}</span>
           </div>
         </div>
         <button>Subscribe</button>
       </div>
       <div className="vid-description">
-        <p>Lorem ipsum dolor sit amet consectetur.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, consequatur?</p>
+        <p>{apiData ? apiData.snippet.description : 'Loading...'}</p>
         <hr />
-        <h4>130 Comments</h4>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
+        <h4>{apiData ? `${valuechanger(apiData.statistics.commentCount)} Comments` : 'Loading...'}</h4>
+        {[...Array(10)].map((_, index) => (
+          <div className="comment" key={index}>
+            <img src={user_profile} alt="User Profile" />
+            <div>
+              <h3>Gyanranjan Patra</h3>
+              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
+              <div className="comment-action">
+                <img src={like} alt="like" />
+                <span>244k</span>
+                <img src={dislike} alt="dislike" />
+                <span>1k</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>Gyanranjan Patra</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed ut, minus et nulla aut dolore. Fugit maiores cupiditate vel ab!</p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>244k</span>
-              <img src={dislike} alt="" />
-              <span>1k</span>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default PlayVideo
+export default PlayVideo;

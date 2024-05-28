@@ -9,3 +9,16 @@
     justify-content: space-between;
     flex-wrap: wrap;
 }
+.main-content-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.play-video {
+    flex-basis: 75%;
+}
+
+.recommended {
+    flex-basis: 20%;
+    margin-left: 20px;
+}

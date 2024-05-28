@@ -1,22 +1,37 @@
-.remomended{
-    flex-basis: 30%;
-}
-.side-video-list{
+/* Parent container to ensure main content and recommended videos are side by side */
+.main-content-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
-
 }
-.side-video-list img{
-    flex-basis: 49%;
+
+/* Adjusted class name to match correct spelling */
+.recommended {
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* spacing between video items */
+}
+
+.side-video-list {
+    display: flex;
+    gap: 8px; /* spacing between image and text */
+}
+
+.side-video-list img {
     width: 50%;
     border-radius: 10px;
+}
 
+.vid-info {
+    flex-grow: 1;
 }
-.vid-info{
-    flex-basis: 49%;
-}
-.vid-info h4{
+
+.vid-info h4 {
     font-size: 13px;
     margin-bottom: 5px;
+}
+
+.vid-info p {
+    font-size: 12px;
+    color: #555;
 }
